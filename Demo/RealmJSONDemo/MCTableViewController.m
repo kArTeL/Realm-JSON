@@ -27,9 +27,10 @@
 #pragma mark - Methods
 
 - (IBAction)reloadData {
-	AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-	[manager GET:@"https://www.nsscreencast.com/api/episodes.json" parameters:nil success: ^(AFHTTPRequestOperation *operation, id responseObject) {
-	    NSArray *array = responseObject[@"episodes"];
+    
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc]initWithBaseURL:[[NSURL alloc]initWithString:@"https://www.nsscreencast.com"]];
+    [manager GET:@"/api/episodes.json" parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSArray *array = responseObject[@"episodes"];
         dispatch_async(dispatch_get_main_queue(), ^{
             RLMRealm *realm = [RLMRealm defaultRealm];
             
@@ -39,9 +40,14 @@
             
             NSLog(@"result: %@", result);
         });
-	} failure: ^(AFHTTPRequestOperation *operation, NSError *error) {
-	    NSLog(@"Error: %@", error);
-	}];
+
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error: %@", error);
+    }];
+//	[manager GET:@"/api/episodes.json" parameters:nil success: ^(AFHTTPRequestOperation *operation, id responseObject) {
+//	   	} failure: ^(AFHTTPRequestOperation *operation, NSError *error) {
+//	    
+//	}];
 }
 
 - (void)refreshData {

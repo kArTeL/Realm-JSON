@@ -11,24 +11,26 @@
 
 @implementation MCEpisode
 
-+ (NSDictionary *)JSONInboundMappingDictionary {
-	return @{
-			   @"title": @"title",
-			   @"description": @"subtitle",
-			   @"id": @"episodeID",
-			   @"episode_number": @"episodeNumber",
-			   @"episode_type": @"episodeType",
-			   @"thumbnail_url": @"thumbnailURL",
-			   @"published_at": @"publishedDate",
-	};
-}
+//+ (NSDictionary *)JSONMap {
+//	return @{
+//			   @"title": @"title",
+//			   @"description": @"subtitle",
+//			   @"id": @"episodeID",
+//			   @"episode_number": @"episodeNumber",
+//			   @"episode_type": @"episodeType",
+//			   @"thumbnail_url": @"thumbnailURL",
+//			   @"published_at": @"publishedDate",
+//	};
+//}
 
-+ (NSDictionary *)JSONOutboundMappingDictionary {
++ (NSDictionary *)JSONMap {
 	return @{
 			   @"title": @"title",
-			   @"subtitle": @"episode.description",
+			   @"subtitle": @"description",
+               @"episodeType":@"episode_type",
 			   @"episodeID": @"id",
-			   @"episodeNumber": @"episode.number",
+               @"thumbnailURL":@"thumbnail_url",
+			   @"episodeNumber": @"episode_number",
 			   @"publishedDate": @"published_at",
 	};
 }

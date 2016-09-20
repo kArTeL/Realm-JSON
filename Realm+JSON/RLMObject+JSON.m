@@ -297,7 +297,23 @@ static NSInteger const kCreateBatchSize = 100;
 
 #pragma mark - Convenience Methods
 
-+ (NSDictionary *)mc_inboundMapping {
++ (NSMutableDictionary *) swapDictionary:(NSMutableDictionary *)dictionary
+{
+    static NSMutableDictionary* swapedDictionary = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        swapedDictionary = [NSMutableDictionary dictionary];
+    });
+    @synchronized(swapedDictionary) {
+        for (NSString *key in [dictionary allKeys]) {
+            swapedDictionary[dictionary[key]] = key;
+        }
+        return swapedDictionary;
+    }
+    
+}
+    
++ (NSDictionary *)mc_outboundMapping {
     static NSMutableDictionary *mappingForClassName = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -306,7 +322,7 @@ static NSInteger const kCreateBatchSize = 100;
     @synchronized(mappingForClassName) {
         NSDictionary *mapping = mappingForClassName[[self className]];
         if (!mapping) {
-            SEL selector = NSSelectorFromString(@"JSONInboundMappingDictionary");
+            SEL selector = NSSelectorFromString(@"JSONMap");
             if ([self respondsToSelector:selector]) {
                 mapping = MCValueFromInvocation(self, selector);
             }
@@ -319,7 +335,7 @@ static NSInteger const kCreateBatchSize = 100;
     }
 }
 
-+ (NSDictionary *)mc_outboundMapping {
++ (NSDictionary *) mc_inboundMapping  {
     static NSMutableDictionary *mappingForClassName = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -329,9 +345,10 @@ static NSInteger const kCreateBatchSize = 100;
     @synchronized(mappingForClassName) {
         NSDictionary *mapping = mappingForClassName[[self className]];
         if (!mapping) {
-            SEL selector = NSSelectorFromString(@"JSONOutboundMappingDictionary");
+            SEL selector = NSSelectorFromString(@"JSONMap");
             if ([self respondsToSelector:selector]) {
-                mapping = MCValueFromInvocation(self, selector);
+                NSMutableDictionary* dictionary =MCValueFromInvocation(self, selector);
+                mapping = [self swapDictionary:dictionary];
             }
             else {
                 mapping = [self mc_defaultOutboundMapping];

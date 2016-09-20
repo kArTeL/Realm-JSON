@@ -1,5 +1,15 @@
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '7.0'
 
-pod 'AFNetworking'
-pod 'Realm+JSON', :path => '../'
+
+
+
+
+target 'RealmJSONDemo' do
+  pod 'AFNetworking'
+  pod 'Realm+JSON', :path => '../'
+
+    target 'RealmJSONDemoTests' do
+    end
+
+end
