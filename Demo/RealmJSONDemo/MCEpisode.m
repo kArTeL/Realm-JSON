@@ -30,8 +30,8 @@
                @"episodeType":@"episode_type",
 			   @"episodeID": @"id",
                @"thumbnailURL":@"thumbnail_url",
-			   @"episodeNumber": @"episode_number",
-			   @"publishedDate": @"published_at",
+               // @"episodeNumber": @"episode_number",
+               @"publishedDate": @"published_at",
 	};
 }
 

@@ -16,13 +16,12 @@ typedef NS_ENUM(NSInteger, MCEpisodeType) {
 @interface MCEpisode : RLMObject
 
 @property NSInteger episodeID;
-@property NSInteger episodeNumber;
+    //@property NSInteger episodeNumber;
 @property MCEpisodeType episodeType;
 
 @property NSString *title;
 @property NSString *subtitle;
 @property NSString *thumbnailURL;
-
 @property NSDate *publishedDate;
 
 @end

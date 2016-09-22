@@ -44,10 +44,6 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error: %@", error);
     }];
-//	[manager GET:@"/api/episodes.json" parameters:nil success: ^(AFHTTPRequestOperation *operation, id responseObject) {
-//	   	} failure: ^(AFHTTPRequestOperation *operation, NSError *error) {
-//	    
-//	}];
 }
 
 - (void)refreshData {
@@ -94,7 +90,7 @@
 	MCEpisode *episode = self.results[indexPath.row];
 
 	cell.textLabel.text = episode.title;
-	cell.detailTextLabel.text = [dateFormatter stringFromDate:episode.publishedDate];
+    cell.detailTextLabel.text = [dateFormatter stringFromDate:episode.publishedDate];
 	cell.imageView.image = nil;
 	cell.backgroundColor = episode.episodeType == MCEpisodeTypePaid ? [UIColor colorWithRed:0.996 green:0.839 blue:0.843 alpha:1]: nil;
 
