@@ -34,8 +34,7 @@ static id MCValueFromInvocation(id object, SEL selector) {
 static NSString *MCTypeStringFromPropertyKey(Class class, NSString *key) {
 	const objc_property_t property = class_getProperty(class, [key UTF8String]);
 	if (!property) {
-        //[NSException raise:NSInternalInconsistencyException format:@"Class %@ does not have property %@", class, key];
-        return nil;
+		[NSException raise:NSInternalInconsistencyException format:@"Class %@ does not have property %@", class, key];
 	}
 	const char *type = property_getAttributes(property);
 	return [NSString stringWithUTF8String:type];
@@ -372,26 +371,22 @@ static NSInteger const kCreateBatchSize = 100;
 
 + (Class)mc_classForPropertyKey:(NSString *)key {
 	NSString *attributes = MCTypeStringFromPropertyKey(self, key);
-    if (attributes!= nil)
-    {
-        if ([attributes hasPrefix:@"T@"]) {
-            static NSCharacterSet *set = nil;
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
-                set = [NSCharacterSet characterSetWithCharactersInString:@"\"<"];
-            });
-            
-            @synchronized(set) {
-                NSString *string;
-                NSScanner *scanner = [NSScanner scannerWithString:attributes];
-                scanner.charactersToBeSkipped = set;
-                [scanner scanUpToCharactersFromSet:set intoString:NULL];
-                [scanner scanUpToCharactersFromSet:set intoString:&string];
-                return NSClassFromString(string);
-            }
+	if ([attributes hasPrefix:@"T@"]) {
+        static NSCharacterSet *set = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            set = [NSCharacterSet characterSetWithCharactersInString:@"\"<"];
+        });
+
+        @synchronized(set) {
+            NSString *string;
+            NSScanner *scanner = [NSScanner scannerWithString:attributes];
+            scanner.charactersToBeSkipped = set;
+            [scanner scanUpToCharactersFromSet:set intoString:NULL];
+            [scanner scanUpToCharactersFromSet:set intoString:&string];
+            return NSClassFromString(string);
         }
-    }
-	
+	}
 	return nil;
 }
 
