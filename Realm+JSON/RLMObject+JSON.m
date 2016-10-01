@@ -158,7 +158,7 @@ static NSInteger const kCreateBatchSize = 100;
 
 + (id)mc_createObjectFromJSONDictionary:(NSDictionary *)origDict {
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	NSDictionary *mapping = [[self class] mc_inboundMapping];
+    NSMutableDictionary* mapping = [[NSMutableDictionary alloc] initWithDictionary:[[self class] mc_inboundMapping]];
 
     NSDictionary *dictionary;
     SEL preprocessingSel = NSSelectorFromString(@"preprocessedJSON:");
@@ -168,7 +168,7 @@ static NSInteger const kCreateBatchSize = 100;
         dictionary = origDict;
     }
     
-	for (NSString *dictionaryKeyPath in mapping) {
+	for (NSString *dictionaryKeyPath in mapping.copy) {
 		NSString *objectKeyPath = mapping[dictionaryKeyPath];
 		
 		id value = [dictionary valueForKeyPath:dictionaryKeyPath];
