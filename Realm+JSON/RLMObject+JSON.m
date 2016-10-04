@@ -314,49 +314,72 @@ static NSInteger const kCreateBatchSize = 100;
 }
     
 + (NSDictionary *)mc_outboundMapping {
-    static NSMutableDictionary *mappingForClassName = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        mappingForClassName = [NSMutableDictionary dictionary];
-    });
-    @synchronized(mappingForClassName) {
-        NSDictionary *mapping = mappingForClassName[[self className]];
-        if (!mapping) {
-            SEL selector = NSSelectorFromString(@"JSONMap");
-            if ([self respondsToSelector:selector]) {
-                mapping = MCValueFromInvocation(self, selector);
-            }
-            else {
-                mapping = [self mc_defaultInboundMapping];
-            }
-            mappingForClassName[[self className]] = mapping;
+//    static NSMutableDictionary *mappingForClassName = nil;
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        mappingForClassName = [NSMutableDictionary dictionary];
+//    });
+//    @synchronized(mappingForClassName) {
+//        NSDictionary *mapping = mappingForClassName[[self className]];
+//        if (!mapping) {
+//            SEL selector = NSSelectorFromString(@"JSONMap");
+//            if ([self respondsToSelector:selector]) {
+//                mapping = MCValueFromInvocation(self, selector);
+//            }
+//            else {
+//                mapping = [self mc_defaultInboundMapping];
+//            }
+//            mappingForClassName[[self className]] = mapping;
+//        }
+//        return mapping;
+//    }
+    NSDictionary *mapping;
+    if (!mapping) {
+        SEL selector = NSSelectorFromString(@"JSONMap");
+        if ([self respondsToSelector:selector]) {
+            mapping = MCValueFromInvocation(self, selector);
         }
-        return mapping;
+        else {
+            mapping = [self mc_defaultInboundMapping];
+        }
+        // mappingForClassName[[self className]] = mapping;
     }
+    return mapping;
+
 }
 
 + (NSDictionary *) mc_inboundMapping  {
-    static NSMutableDictionary *mappingForClassName = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        mappingForClassName = [NSMutableDictionary dictionary];
-    });
-
-    @synchronized(mappingForClassName) {
-        NSDictionary *mapping = mappingForClassName[[self className]];
-        if (!mapping) {
-            SEL selector = NSSelectorFromString(@"JSONMap");
-            if ([self respondsToSelector:selector]) {
-                NSMutableDictionary* dictionary =MCValueFromInvocation(self, selector);
-                mapping = [self swapDictionary:dictionary];
-            }
-            else {
-                mapping = [self mc_defaultOutboundMapping];
-            }
-            mappingForClassName[[self className]] = mapping;
-        }
-        return mapping;
+//    static NSMutableDictionary *mappingForClassName = nil;
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        mappingForClassName = [NSMutableDictionary dictionary];
+//    });
+//
+//    @synchronized(mappingForClassName) {
+//        NSDictionary *mapping = mappingForClassName[[self className]];
+//        if (!mapping) {
+//            SEL selector = NSSelectorFromString(@"JSONMap");
+//            if ([self respondsToSelector:selector]) {
+//                NSMutableDictionary* dictionary =MCValueFromInvocation(self, selector);
+//                mapping = [self swapDictionary:dictionary];
+//            }
+//            else {
+//                mapping = [self mc_defaultOutboundMapping];
+//            }
+//            mappingForClassName[[self className]] = mapping;
+//        }
+//        return mapping;
+//    }
+    NSDictionary *mapping;
+    SEL selector = NSSelectorFromString(@"JSONMap");
+    if ([self respondsToSelector:selector]) {
+        NSMutableDictionary* dictionary =MCValueFromInvocation(self, selector);
+        mapping = [self swapDictionary:dictionary];
     }
+    else {
+        mapping = [self mc_defaultOutboundMapping];
+    }
+    return mapping;
 }
 
 + (RLMProperty *)mc_propertyForPropertyKey:(NSString *)key {
