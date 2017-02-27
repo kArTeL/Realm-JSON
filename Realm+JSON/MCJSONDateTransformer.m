@@ -49,19 +49,23 @@ static NSString *const kDateFormatDateOnly = @"yyyy-MM-dd";
     return self;
 }
 
-+ (instancetype)valueTransformerWithDateFormat:(NSString *)dateFormat {
++ (instancetype)valueTransformerWithDateFormat:(NSString *)dateFormat
+{
     return [[self alloc] initWithDateFormat:dateFormat];
 }
+
+
 
 - (instancetype)initWithDateFormat:(NSString *)dateFormat {
     self = [super init];
     if (self) {
         self.formatter = [[NSDateFormatter alloc] init];
-        self.formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        self.formatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
         self.formatter.dateFormat = dateFormat;
     }
     return self;
 }
+
 
 + (Class)transformedValueClass {
 	return [NSDate class];
@@ -73,7 +77,23 @@ static NSString *const kDateFormatDateOnly = @"yyyy-MM-dd";
 
 - (id)transformedValue:(id)value {
     if([value isKindOfClass:[NSNull class]])return nil;
-	return [self.formatter dateFromString:value];
+    //NSString* date = @"2017-03-01T5:59:59.000Z";
+    
+    NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
+    
+    [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    
+    [formatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
+    
+    formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    
+    NSDate* utcDate = [formatter dateFromString:value];
+    
+    [formatter setTimeZone:[NSTimeZone systemTimeZone]];
+    
+    NSString* localDate = [formatter stringFromDate:utcDate];
+    
+	return [self.formatter dateFromString:localDate];
 }
 
 - (id)reverseTransformedValue:(id)value {
