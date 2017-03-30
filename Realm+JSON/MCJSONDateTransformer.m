@@ -61,6 +61,7 @@ static NSString *const kDateFormatDateOnly = @"yyyy-MM-dd";
     if (self) {
         self.formatter = [[NSDateFormatter alloc] init];
         self.formatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+        self.formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
         self.formatter.dateFormat = dateFormat;
     }
     return self;
@@ -68,11 +69,11 @@ static NSString *const kDateFormatDateOnly = @"yyyy-MM-dd";
 
 
 + (Class)transformedValueClass {
-	return [NSDate class];
+    return [NSDate class];
 }
 
 + (BOOL)allowsReverseTransformation {
-	return YES;
+    return YES;
 }
 
 - (id)transformedValue:(id)value {
@@ -92,12 +93,13 @@ static NSString *const kDateFormatDateOnly = @"yyyy-MM-dd";
     [formatter setTimeZone:[NSTimeZone systemTimeZone]];
     
     NSString* localDate = [formatter stringFromDate:utcDate];
+    NSDate* returnedDate = [self.formatter dateFromString:localDate];
     
-	return [self.formatter dateFromString:localDate];
+    return returnedDate;
 }
 
 - (id)reverseTransformedValue:(id)value {
-	return [self.formatter stringFromDate:value];
+    return [self.formatter stringFromDate:value];
 }
 
 @end
